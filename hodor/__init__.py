@@ -21,28 +21,39 @@ class Hodor(object):
         self.content = r.content
         return self.content
 
-    def get_value(self, xpath):
+    @staticmethod
+    def get_value(content, rule):
         '''Returns result for a specific xpath'''
-        tree = html.fromstring(self.content)
-        return tree.xpath(xpath)
+        tree = html.fromstring(content)
+        data = tree.xpath(rule['xpath'])
 
-    def parse(self):
-        '''Parses the content based on the config set and stores in _data'''
-        if self.content is None:
-            self.fetch()
-        if len(self.config) is 0:
-            self._data = {'content': self.content}
+        many = rule.get('many', True)
+        if not many:
+            if len(data) == 0:
+                data = None
+            else:
+                data = data[0]
+
+        return data
+
+    @classmethod
+    def parse(cls, content, config={}):
+        '''Parses the content based on the config set'''
+        if len(config) is 0:
+            _data = {'content': content}
         else:
-            self._data = {}
-            for key, xpath in self.config.items():
-                self._data[key] = self.get_value(xpath)
-        return self._data
+            _data = {}
+            for key, rule in config.items():
+                _data[key] = cls.get_value(content, rule)
+        return _data
 
     def get(self):
-        return self.parse()
+        self.fetch()
+        self._data = self.parse(self.content, self.config)
+        return self._data
 
     @property
     def data(self):
         if not hasattr(self, '_data'):
-            self.parse()
+            self.get()
         return self._data

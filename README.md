@@ -5,8 +5,9 @@ A simple html scraper with xpath.
 ## Usage
 ```
 from hodor import Hodor
-config = {'src': '/html/body/div[1]/nav/div/div[1]/a/img/@src',
-          'width': '/html/body/div[1]/nav/div/div[1]/a/img/@width'}
+config = {'src': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@src', 'many':False},
+          'width': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@width', 'many':False},
+          'p': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@data-pagespeed-url-hash', 'many':False}}
 h = Hodor(url='https://www.compile.com', config=config)
 h.data
 ```

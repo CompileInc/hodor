@@ -1,0 +1,2 @@
+lxml==3.6.1
+requesocks==0.10.8

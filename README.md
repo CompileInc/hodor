@@ -15,6 +15,7 @@ h.data
 
 It also takes arguments:
 
+- ```ua``` (User-Agent)
 - ```proxies``` (check requesocks)
 - ```auth```
 

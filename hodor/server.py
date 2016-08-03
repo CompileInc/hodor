@@ -1,4 +1,5 @@
 import json
+import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 
@@ -18,7 +19,12 @@ def make_app():
         (r"/", MainHandler),
     ])
 
-if __name__ == "__main__":
+def main():
     app = make_app()
-    app.listen(8888)
+    server = tornado.httpserver.HTTPServer(app)
+    server.bind(8888)
+    server.start(0)
     tornado.ioloop.IOLoop.current().start()
+
+if __name__ == "__main__":
+    main()

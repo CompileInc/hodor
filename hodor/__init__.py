@@ -2,22 +2,24 @@ from lxml import html
 import requesocks
 
 class Hodor(object):
-    def __init__(self, url, config={}, proxies={}, auth=None):
+    def __init__(self, url, config={}, proxies={}, auth=None, ua='Hodor 1.0'):
         self.content = None
         self.url = url
         self.config = config
         self.proxies = proxies
         self.auth = auth
+        self.ua = ua
 
     def fetch(self):
         '''Does the requests fetching and stores result in self.content'''
         session = requesocks.session()
+        headers = {'User-Agent': self.ua}
         if len(self.proxies) > 0:
             session.proxies = proxies
         if self.auth:
-            r = session.get(self.url, auth=self.auth)
+            r = session.get(self.url, headers=headers, auth=self.auth)
         else:
-            r = session.get(self.url)
+            r = session.get(self.url, headers=headers)
         self.content = r.content
         return self.content
 

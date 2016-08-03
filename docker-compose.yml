@@ -1,0 +1,7 @@
+web:
+    build: .
+    command: bash -c "python /usr/src/app/server.py"
+    volumes:
+        - .:/usr/src/app/
+    ports:
+        - "8888:8888"

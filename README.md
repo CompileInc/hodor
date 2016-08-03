@@ -3,6 +3,8 @@
 A simple html scraper with xpath.
 
 ## Usage
+
+### As python package
 ```
 from hodor import Hodor
 config = {'src': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@src', 'many':False},
@@ -15,6 +17,19 @@ It also takes arguments:
 
 - ```proxies``` (check requesocks)
 - ```auth```
+
+### As tornado service
+
+#### Server
+```
+python server.py
+```
+
+### Client
+```
+curl -X POST -H "Content-Type: application/json" -d '{"url":"https://compile.com", "config":{"src": {"xpath": "/html/body/div[1]/nav/div/div[1]/a/img/@src"}, "width": {"xpath": "/html/body/div[1]/nav/div/div[1]/a/img/@width"}}}' "http://localhost:8888/"
+```
+
 
 ## Result
 ```

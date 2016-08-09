@@ -7,7 +7,7 @@ from hodor import Hodor
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("POST with the {'url':<url>, 'config':<config>}")
+        self.render("server/index.html")
 
     def post(self):
         body = json.loads(self.request.body)

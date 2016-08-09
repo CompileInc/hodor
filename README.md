@@ -8,7 +8,9 @@ A simple html scraper with xpath.
 ```
 from hodor import Hodor
 config = {'src': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@src', 'many':False},
-          'width': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@width', 'many':True}]
+          'width': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@width', 'many':True},
+          'heading': {'css': '.container.homepage-hero h1 strong', 'many': False}
+         }
 h = Hodor(url='https://www.compile.com', config=config)
 h.data
 ```

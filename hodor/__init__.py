@@ -1,4 +1,5 @@
 from lxml import html
+from lxml.cssselect import CSSSelector
 import requesocks
 
 class Hodor(object):
@@ -27,7 +28,12 @@ class Hodor(object):
     def get_value(content, rule):
         '''Returns result for a specific xpath'''
         tree = html.fromstring(content)
-        data = tree.xpath(rule['xpath'])
+        data = ""
+
+        if 'xpath' in rule:
+            data = tree.xpath(rule['xpath'])
+        elif 'css' in rule:
+            data = [node.text_content() for node in tree.cssselect(rule['css'])]
 
         many = rule.get('many', True)
         if not many:

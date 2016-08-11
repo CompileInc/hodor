@@ -11,7 +11,11 @@ class MainHandler(tornado.web.RequestHandler):
 
     def post(self):
         url = self.get_argument('url')
-        config = self.get_argument('config', {})
+        try:
+            config = self.get_argument('config', '{}')
+            config = json.loads(config)
+        except:
+            config = {'detail': 'Invalid config'}
         hodor = Hodor(url=url, config=config)
         self.write(hodor.data)
 

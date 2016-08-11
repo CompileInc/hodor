@@ -10,8 +10,9 @@ class MainHandler(tornado.web.RequestHandler):
         self.render("server/index.html")
 
     def post(self):
-        body = json.loads(self.request.body)
-        hodor = Hodor(**body)
+        url = self.get_argument('url')
+        config = self.get_argument('config', {})
+        hodor = Hodor(url=url, config=config)
         self.write(hodor.data)
 
 def make_app():

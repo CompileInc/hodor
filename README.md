@@ -25,12 +25,12 @@ It also takes arguments:
 
 #### Server
 ```
-python server.py
+docker-compose up
 ```
 
 ### Client
 ```
-curl -X POST -H "Content-Type: application/json" -d '{"url":"https://compile.com", "config":{"src": {"xpath": "/html/body/div[1]/nav/div/div[1]/a/img/@src"}, "width": {"xpath": "/html/body/div[1]/nav/div/div[1]/a/img/@width"}}}' "http://localhost:8888/"
+curl -X POST -F "url=https://www.compile.com/" -F "config={\"src\": {\"css\": \"strong\", \"many\":false}, \"width\": {\"xpath\": \"/html/body/div[1]/nav/div/div[1]/a/img/@width\", \"many\":false}}" "http://localhost:8888"
 ```
 
 

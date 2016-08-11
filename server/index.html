@@ -33,7 +33,24 @@
         <div class="columns">
           <div class="column is-6">
             <div class="content">
-            <h1>Some docs go here</h1>
+              <h1>Documentation</h1>
+              <h2>Server</h2>
+              <h2>Python</h2>
+                <h3>Installation</h3>
+                <pre><code>pip install hodor</code></pre>
+                <h3>Usage</h3>
+<pre>
+<code>from hodor import Hodor
+config = {'src': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@src', 'many':False},
+          'width': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@width', 'many':True},
+          'heading': {'css': '.container.homepage-hero h1 strong', 'many': False}
+         }
+h = Hodor(url='https://www.compile.com', config=config)
+h.data</code>
+</pre>
+              <div>
+                <small>Inspired by <a href="http://www.jamapi.xyz/">Jam API</a>.</small>
+              </div>
             </div>
           </div>
           <div class="column is-6">
@@ -42,7 +59,7 @@
                 <input class="input" type="url" name="url" placeholder="URL" required="required">
               </p>
               <p class="control">
-                <textarea class="textarea" name="config" placeholder="config"></textarea>
+                <textarea class="textarea" name="config" placeholder="config" required="required"></textarea>
               </p>
               <p class="control">
                 <button class="button is-success is-outlined is-fullwidth" type="submit">QUERY SITE</button>

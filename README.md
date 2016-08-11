@@ -1,6 +1,6 @@
 # Hodor
 
-A simple html scraper with xpath.
+A simple html scraper with xpath or css.
 
 ## Usage
 
@@ -38,5 +38,3 @@ curl -X POST -F "url=https://www.compile.com/" -F "config={\"src\": {\"css\": \"
 ```
 {'src': '/img/compile-logo-white.1002b288.svg', 'width': ['100px']}
 ```
-
-![DO one thing](https://pbs.twimg.com/media/CjSN_N5XIAEmnc0.jpg)

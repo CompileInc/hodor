@@ -3,13 +3,14 @@ from lxml.cssselect import CSSSelector
 import requesocks
 
 class Hodor(object):
-    def __init__(self, url, config={}, proxies={}, auth=None, ua='Hodor 1.0'):
+    def __init__(self, url, config={}, proxies={}, auth=None, ua='Hodor 1.0', trim_values=True):
         self.content = None
         self.url = url
         self.config = config
         self.proxies = proxies
         self.auth = auth
         self.ua = ua
+        self.trim_values = trim_values
 
     def fetch(self):
         '''Does the requests fetching and stores result in self.content'''
@@ -45,19 +46,25 @@ class Hodor(object):
         return data
 
     @classmethod
-    def parse(cls, content, config={}):
+    def parse(cls, content, config={}, trim_values=True):
         '''Parses the content based on the config set'''
         if len(config) is 0:
             _data = {'content': content}
         else:
             _data = {}
             for key, rule in config.items():
-                _data[key] = cls.get_value(content, rule)
+                value = cls.get_value(content, rule)
+                if trim_values and value:
+                    if rule['many']:
+                        value = [v.strip() if isinstance(v, basestring) else v for v in value]
+                    else:
+                        value = value.strip() if isinstance(value, basestring) else value
+                _data[key] = value
         return _data
 
     def get(self):
         self.fetch()
-        self._data = self.parse(self.content, self.config)
+        self._data = self.parse(self.content, self.config, self.trim_values)
         return self._data
 
     @property

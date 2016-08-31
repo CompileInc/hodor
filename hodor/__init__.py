@@ -53,6 +53,8 @@ class Hodor(object):
         else:
             _data = {}
             for key, rule in config.items():
+                if key.startswith('_'):
+                    continue
                 value = cls.get_value(content, rule)
                 if trim_values and value:
                     if rule['many']:
@@ -60,6 +62,21 @@ class Hodor(object):
                     else:
                         value = value.strip() if isinstance(value, basestring) else value
                 _data[key] = value
+        groups = config.get('_groups', {})
+        if groups:
+            for dest, group_fields in groups.items():
+                gdata = []
+                for field in group_fields:
+                    gdata.append(_data[field])
+                _data[dest] = []
+                for gd in zip(*gdata):
+                    d = {}
+                    for i, field in enumerate(group_fields):
+                        d[field] = gd[i]
+                    _data[dest].append(d)
+            group_fields = [field for field_set in groups.values() for field in field_set]
+            for field in group_fields:
+                del _data[field]
         return _data
 
     def get(self):

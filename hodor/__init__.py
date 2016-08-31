@@ -53,6 +53,22 @@ class Hodor(object):
 
         return data
 
+    @staticmethod
+    def _group_data(data, groups):
+        for dest, group_fields in groups.items():
+            gdata = []
+            for field in group_fields:
+                gdata.append(data[field])
+            data[dest] = []
+            for gd in zip(*gdata):
+                d = {}
+                for i, field in enumerate(group_fields):
+                    d[field] = gd[i]
+                data[dest].append(d)
+        group_fields = [field for field_set in groups.values() for field in field_set]
+        for field in group_fields:
+            del data[field]
+
     @classmethod
     def parse(cls, content, config={}, extra_config={}, trim_values=True):
         '''Parses the content based on the config set'''
@@ -71,20 +87,7 @@ class Hodor(object):
 
         groups = extra_config.get('groups', {})
         if groups:
-            for dest, group_fields in groups.items():
-                gdata = []
-                for field in group_fields:
-                    gdata.append(_data[field])
-                _data[dest] = []
-                for gd in zip(*gdata):
-                    d = {}
-                    for i, field in enumerate(group_fields):
-                        d[field] = gd[i]
-                    _data[dest].append(d)
-            group_fields = [field for field_set in groups.values() for field in field_set]
-            for field in group_fields:
-                del _data[field]
-
+            cls._group_data(_data, groups)
         return _data
 
     def get(self):

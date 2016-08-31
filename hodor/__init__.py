@@ -6,11 +6,19 @@ class Hodor(object):
     def __init__(self, url, config={}, proxies={}, auth=None, ua='Hodor 1.0', trim_values=True):
         self.content = None
         self.url = url
-        self.config = config
         self.proxies = proxies
         self.auth = auth
         self.ua = ua
         self.trim_values = trim_values
+        self.config = {}
+        self.extra_config = {}
+
+        for k, v in config.items():
+            if k.startswith("_"):
+                self.extra_config[k.lstrip("_")] = v
+            else:
+                self.config[k] = v
+
 
     def fetch(self):
         '''Does the requests fetching and stores result in self.content'''
@@ -46,15 +54,13 @@ class Hodor(object):
         return data
 
     @classmethod
-    def parse(cls, content, config={}, trim_values=True):
+    def parse(cls, content, config={}, extra_config={}, trim_values=True):
         '''Parses the content based on the config set'''
         if len(config) is 0:
             _data = {'content': content}
         else:
             _data = {}
             for key, rule in config.items():
-                if key.startswith('_'):
-                    continue
                 value = cls.get_value(content, rule)
                 if trim_values and value:
                     if rule['many']:
@@ -62,7 +68,8 @@ class Hodor(object):
                     else:
                         value = value.strip() if isinstance(value, basestring) else value
                 _data[key] = value
-        groups = config.get('_groups', {})
+
+        groups = extra_config.get('groups', {})
         if groups:
             for dest, group_fields in groups.items():
                 gdata = []
@@ -77,11 +84,12 @@ class Hodor(object):
             group_fields = [field for field_set in groups.values() for field in field_set]
             for field in group_fields:
                 del _data[field]
+
         return _data
 
     def get(self):
         self.fetch()
-        self._data = self.parse(self.content, self.config, self.trim_values)
+        self._data = self.parse(self.content, self.config, self.extra_config, self.trim_values)
         return self._data
 
     @property

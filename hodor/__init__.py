@@ -27,11 +27,11 @@ class Hodor(object):
         session = requesocks.session()
         headers = {'User-Agent': self.ua}
         if len(self.proxies) > 0:
-            session.proxies = proxies
+            session.proxies = self.proxies
         if self.auth:
-            r = session.get(url, headers=headers, auth=self.auth)
+            r = session.get(url, headers=headers, auth=self.auth, verify=False)
         else:
-            r = session.get(url, headers=headers)
+            r = session.get(url, headers=headers, verify=False)
         self.content = r.content
         return self.content
 

@@ -27,9 +27,9 @@ class Hodor(object):
         if len(self.proxies) > 0:
             session.proxies = self.proxies
         if self.auth:
-            r = session.get(self.url, headers=headers, auth=self.auth)
+            r = session.get(self.url, headers=headers, auth=self.auth, verify=False)
         else:
-            r = session.get(self.url, headers=headers)
+            r = session.get(self.url, headers=headers, verify=False)
         self.content = r.content
         return self.content
 

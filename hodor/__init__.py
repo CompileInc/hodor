@@ -109,7 +109,7 @@ class Hodor(object):
             _data = {}
             for key, rule in config.items():
                 value = cls.get_value(content, rule)
-                if trim_values not in EMPTY_VALUES and value not in EMPTY_VALUES:
+                if trim_values and value not in EMPTY_VALUES:
                     if 'many' in rule and rule['many']:
                         value = [v.strip() if isinstance(v, basestring) else v for v in value]
                     else:

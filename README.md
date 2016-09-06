@@ -6,10 +6,10 @@ A simple html scraper with xpath or css.
 
 ### As python package
 
-***WARNING: This package by default doesn't verify ssl connections. Please check options to enable them.***
+***WARNING: This package by default doesn't verify ssl connections. Please check the [arguments](#arguments) to enable them.***
 
 
-```
+```python
 from hodor import Hodor
 
 url = 'http://www.nasdaq.com/markets/stocks/symbol-change-history.aspx'
@@ -41,7 +41,7 @@ h = Hodor(url=url, config=CONFIG, pagination_max_limit=5)
 h.data
 ```
 
-It also takes arguments:
+#### Arguments
 
 - ```ua``` (User-Agent)
 - ```proxies``` (check requesocks)
@@ -51,7 +51,7 @@ It also takes arguments:
 - ```ssl_verify``` (default - False)
 
 
-Config parameters:
+#### Config parameters:
 - By default any key in the config is a rule to parse.
 - Extra parameters include grouping (_groups) and pagination (_paginate_by) which is also of the rule format.
 
@@ -60,17 +60,17 @@ Config parameters:
 ### As tornado service
 
 #### Server
-```
+```shell
 docker-compose up
 ```
 
 ### Client
-```
+```shell
 curl -X POST -F "url=https://www.compile.com/" -F "config={\"src\": {\"css\": \"strong\", \"many\":false}, \"width\": {\"xpath\": \"/html/body/div[1]/nav/div/div[1]/a/img/@width\", \"many\":false}}" "http://localhost:8888"
 ```
 
 
 ## Result
-```
+```javascript
 {'src': '/img/compile-logo-white.1002b288.svg', 'width': ['100px']}
 ```

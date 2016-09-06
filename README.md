@@ -46,14 +46,16 @@ h.data
 - ```ua``` (User-Agent)
 - ```proxies``` (check requesocks)
 - ```auth```
-- ```crawl_delay``` (crawl delay in seconds across pagination - default 3 seconds)
-- ```pagination_max_limit``` (max number of pages to crawl - default 100)
-- ```ssl_verify``` (default - False)
+- ```crawl_delay``` (crawl delay in seconds across pagination - default: 3 seconds)
+- ```pagination_max_limit``` (max number of pages to crawl - default: 100)
+- ```ssl_verify``` (default: False)
+- ```robots``` (if set respects robots.txt - default: True)
+- ```trim_values``` (if set trims output for leading and trailing whitespace - default: True)
 
 
 #### Config parameters:
 - By default any key in the config is a rule to parse.
-- Extra parameters include grouping (_groups) and pagination (_paginate_by) which is also of the rule format.
+- Extra parameters include grouping (```_groups```) and pagination (```_paginate_by```) which is also of the rule format.
 
 
 

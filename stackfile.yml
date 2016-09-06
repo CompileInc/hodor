@@ -1,5 +1,0 @@
-web:
-  image: yoda.compile.com:4678/crawler/hodor
-  command: bash -c "python /usr/src/app/server.py"
-  ports:
-    - "8888:8888"

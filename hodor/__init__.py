@@ -15,12 +15,14 @@ class Hodor(object):
                  crawl_delay=DEFAULT_CRAWL_DELAY,
                  ssl_verify=False,
                  trim_values=True):
+
         self.content = None
         self.url = url
         self.proxies = proxies
         self.auth = auth
         self.ua = ua
         self.trim_values = trim_values
+        self.ssl_verify = ssl_verify
         self.config = {}
         self.extra_config = {}
 
@@ -85,11 +87,17 @@ class Hodor(object):
             del data[field]
 
     def package_pages(self):
-        #TODO: Context aware packaging has to go here.
+        self._data = {}
         if len(self._pages) == 1:
             self._data = self._pages[0]
         else:
-            self._data = self._pages
+            self._data = {key:[] for key in self._pages[0].keys()}
+            for page in self._pages:
+                for k, v in page.items():
+                    if hasattr(v, '__iter__'):
+                        self._data[k].extend(v)
+                    else:
+                        self._data[k].append(v)
         return self._data
 
     @classmethod

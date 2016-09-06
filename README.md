@@ -5,13 +5,39 @@ A simple html scraper with xpath or css.
 ## Usage
 
 ### As python package
+
+***WARNING: This package by default doesn't verify ssl connections. Please check options to enable them.***
+
+
 ```
 from hodor import Hodor
-config = {'src': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@src', 'many':False},
-          'width': {'xpath': '/html/body/div[1]/nav/div/div[1]/a/img/@width', 'many':True},
-          'heading': {'css': '.container.homepage-hero h1 strong', 'many': False}
-         }
-h = Hodor(url='https://www.compile.com', config=config)
+
+url = 'http://www.nasdaq.com/markets/stocks/symbol-change-history.aspx'
+
+CONFIG = {
+    'old_symbol': {
+        'css': '#SymbolChangeList_table tr td:nth-child(1)',
+        'many': True
+    },
+    'new_symbol': {
+        'css': '#SymbolChangeList_table tr td:nth-child(2)',
+        'many': True
+    },
+    'effective_date': {
+        'css': '#SymbolChangeList_table tr td:nth-child(3)',
+        'many': True
+    },
+    '_groups': {
+        'data': ['old_symbol', 'new_symbol', 'effective_date']
+    },
+    '_paginate_by': {
+        'xpath': '//*[@id="two_column_main_content_lb_NextPage"]/@href',
+        'many': False
+    }
+}
+
+h = Hodor(url=url, config=CONFIG, pagination_max_limit=5)
+
 h.data
 ```
 
@@ -20,6 +46,16 @@ It also takes arguments:
 - ```ua``` (User-Agent)
 - ```proxies``` (check requesocks)
 - ```auth```
+- ```crawl_delay``` (crawl delay in seconds across pagination - default 3 seconds)
+- ```pagination_max_limit``` (max number of pages to crawl - default 100)
+- ```ssl_verify``` (default - False)
+
+
+Config parameters:
+- By default any key in the config is a rule to parse.
+- Extra parameters include grouping (_groups) and pagination (_paginate_by) which is also of the rule format.
+
+
 
 ### As tornado service
 

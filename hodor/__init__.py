@@ -1,17 +1,35 @@
 from lxml import html
 from lxml.cssselect import CSSSelector
 import requesocks
+import time
+
+DEFAULT_HODOR_UA = 'Hodor 1.0'
+DEFAULT_HODOR_MAX_PAGES = 100
+DEFAULT_CRAWL_DELAY = 3
+EMPTY_VALUES = (None, '', [], (), {})
 
 class Hodor(object):
-    def __init__(self, url, config={}, proxies={}, auth=None, ua='Hodor 1.0', trim_values=True):
+    def __init__(self, url, config={}, proxies={},
+                 auth=None, ua=DEFAULT_HODOR_UA,
+                 pagination_max_limit=DEFAULT_HODOR_MAX_PAGES,
+                 crawl_delay=DEFAULT_CRAWL_DELAY,
+                 ssl_verify=False,
+                 trim_values=True):
+
         self.content = None
         self.url = url
         self.proxies = proxies
         self.auth = auth
         self.ua = ua
         self.trim_values = trim_values
+        self.ssl_verify = ssl_verify
         self.config = {}
         self.extra_config = {}
+
+        self._pages = []
+        self._page_count = 0
+        self._pagination_max_limit = pagination_max_limit
+        self._default_crawl_delay = crawl_delay
 
         for k, v in config.items():
             if k.startswith("_"):
@@ -19,17 +37,16 @@ class Hodor(object):
             else:
                 self.config[k] = v
 
-
-    def fetch(self):
+    def fetch(self, url):
         '''Does the requests fetching and stores result in self.content'''
         session = requesocks.session()
         headers = {'User-Agent': self.ua}
         if len(self.proxies) > 0:
             session.proxies = self.proxies
         if self.auth:
-            r = session.get(self.url, headers=headers, auth=self.auth, verify=False)
+            r = session.get(url, headers=headers, auth=self.auth, verify=self.ssl_verify)
         else:
-            r = session.get(self.url, headers=headers, verify=False)
+            r = session.get(url, headers=headers, verify=self.ssl_verify)
         self.content = r.content
         return self.content
 
@@ -69,6 +86,20 @@ class Hodor(object):
         for field in group_fields:
             del data[field]
 
+    def package_pages(self):
+        self._data = {}
+        if len(self._pages) == 1:
+            self._data = self._pages[0]
+        else:
+            self._data = {key:[] for key in self._pages[0].keys()}
+            for page in self._pages:
+                for k, v in page.items():
+                    if hasattr(v, '__iter__'):
+                        self._data[k].extend(v)
+                    else:
+                        self._data[k].append(v)
+        return self._data
+
     @classmethod
     def parse(cls, content, config={}, extra_config={}, trim_values=True):
         '''Parses the content based on the config set'''
@@ -78,21 +109,38 @@ class Hodor(object):
             _data = {}
             for key, rule in config.items():
                 value = cls.get_value(content, rule)
-                if trim_values and value:
-                    if rule['many']:
+                if trim_values and value not in EMPTY_VALUES:
+                    if 'many' in rule and rule['many']:
                         value = [v.strip() if isinstance(v, basestring) else v for v in value]
                     else:
                         value = value.strip() if isinstance(value, basestring) else value
                 _data[key] = value
 
+        paginate_by = extra_config.get('paginate_by')
+        if paginate_by:
+            paginate_by = cls.get_value(content, paginate_by)
+
         groups = extra_config.get('groups', {})
         if groups:
             cls._group_data(_data, groups)
-        return _data
+        return _data, paginate_by
 
-    def get(self):
-        self.fetch()
-        self._data = self.parse(self.content, self.config, self.extra_config, self.trim_values)
+    def _get(self, url):
+        self.fetch(url)
+        return self.parse(self.content, self.config, self.extra_config, self.trim_values)
+
+    def get(self, url=None):
+        url = url if url else self.url
+        self._data, paginate_by = self._get(url)
+
+        self._pages.append(self._data)
+        self._page_count += 1
+
+        if paginate_by and self._page_count < self._pagination_max_limit:
+            time.sleep(self._default_crawl_delay)
+            self.get(paginate_by)
+
+        self.package_pages()
         return self._data
 
     @property

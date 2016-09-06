@@ -6,7 +6,7 @@ A simple html scraper with xpath or css.
 
 ### As python package
 
-***WARNING: This package by default doesn't very ssl connections. Please check options to enable them.***
+***WARNING: This package by default doesn't verify ssl connections. Please check options to enable them.***
 
 
 ```
@@ -29,7 +29,7 @@ CONFIG = {
     },
     '_groups': {
         'data': ['old_symbol', 'new_symbol', 'effective_date']
-    }
+    },
     '_paginate_by': {
         'xpath': '//*[@id="two_column_main_content_lb_NextPage"]/@href',
         'many': False

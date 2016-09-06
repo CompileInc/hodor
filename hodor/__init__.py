@@ -4,15 +4,16 @@ import requesocks
 import time
 
 DEFAULT_HODOR_UA = 'Hodor 1.0'
-DEFAULT_HODO_MAX_PAGES = 100
+DEFAULT_HODOR_MAX_PAGES = 100
 DEFAULT_CRAWL_DELAY = 3
 EMPTY_VALUES = (None, '', [], (), {})
 
 class Hodor(object):
     def __init__(self, url, config={}, proxies={},
                  auth=None, ua=DEFAULT_HODOR_UA,
-                 pagination_max_limit=DEFAULT_HODO_MAX_PAGES,
+                 pagination_max_limit=DEFAULT_HODOR_MAX_PAGES,
                  crawl_delay=DEFAULT_CRAWL_DELAY,
+                 ssl_verify=False,
                  trim_values=True):
         self.content = None
         self.url = url
@@ -41,9 +42,9 @@ class Hodor(object):
         if len(self.proxies) > 0:
             session.proxies = self.proxies
         if self.auth:
-            r = session.get(url, headers=headers, auth=self.auth, verify=False)
+            r = session.get(url, headers=headers, auth=self.auth, verify=self.ssl_verify)
         else:
-            r = session.get(url, headers=headers, verify=False)
+            r = session.get(url, headers=headers, verify=self.ssl_verify)
         self.content = r.content
         return self.content
 
@@ -107,7 +108,7 @@ class Hodor(object):
                         value = value.strip() if isinstance(value, basestring) else value
                 _data[key] = value
 
-        paginate_by = extra_config.get('paginate_by', None)
+        paginate_by = extra_config.get('paginate_by')
         if paginate_by:
             paginate_by = cls.get_value(content, paginate_by)
 

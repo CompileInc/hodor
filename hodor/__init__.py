@@ -1,12 +1,19 @@
 from lxml import html
 from lxml.cssselect import CSSSelector
 import requesocks
+import time
 
 DEFAULT_HODOR_UA = 'Hodor 1.0'
 DEFAULT_HODO_MAX_PAGES = 100
+DEFAULT_CRAWL_DELAY = 3
+EMPTY_VALUES = (None, '', [], (), {})
 
 class Hodor(object):
-    def __init__(self, url, config={}, proxies={}, auth=None, ua=DEFAULT_HODOR_UA, trim_values=True):
+    def __init__(self, url, config={}, proxies={},
+                 auth=None, ua=DEFAULT_HODOR_UA,
+                 pagination_max_limit=DEFAULT_HODO_MAX_PAGES,
+                 crawl_delay=DEFAULT_CRAWL_DELAY,
+                 trim_values=True):
         self.content = None
         self.url = url
         self.proxies = proxies
@@ -15,6 +22,11 @@ class Hodor(object):
         self.trim_values = trim_values
         self.config = {}
         self.extra_config = {}
+
+        self._pages = []
+        self._page_count = 0
+        self._pagination_max_limit = pagination_max_limit
+        self._default_crawl_delay = crawl_delay
 
         for k, v in config.items():
             if k.startswith("_"):
@@ -71,6 +83,14 @@ class Hodor(object):
         for field in group_fields:
             del data[field]
 
+    def package_pages(self):
+        #TODO: Context aware packaging has to go here.
+        if len(self._pages) == 1:
+            self._data = self._pages[0]
+        else:
+            self._data = self._pages
+        return self._data
+
     @classmethod
     def parse(cls, content, config={}, extra_config={}, trim_values=True):
         '''Parses the content based on the config set'''
@@ -80,28 +100,38 @@ class Hodor(object):
             _data = {}
             for key, rule in config.items():
                 value = cls.get_value(content, rule)
-                if trim_values and value:
-                    if rule['many']:
+                if trim_values not in EMPTY_VALUES and value not in EMPTY_VALUES:
+                    if 'many' in rule and rule['many']:
                         value = [v.strip() if isinstance(v, basestring) else v for v in value]
                     else:
                         value = value.strip() if isinstance(value, basestring) else value
                 _data[key] = value
 
-        next = extra_config.get('next', None)
-        if next:
-            next = self.get_value(content, next)
+        paginate_by = extra_config.get('paginate_by', None)
+        if paginate_by:
+            paginate_by = cls.get_value(content, paginate_by)
 
         groups = extra_config.get('groups', {})
         if groups:
             cls._group_data(_data, groups)
-        return _data, next
+        return _data, paginate_by
 
     def _get(self, url):
         self.fetch(url)
         return self.parse(self.content, self.config, self.extra_config, self.trim_values)
 
-    def get(self):
-        self._data, next = self._get(self.url)
+    def get(self, url=None):
+        url = url if url else self.url
+        self._data, paginate_by = self._get(url)
+
+        self._pages.append(self._data)
+        self._page_count += 1
+
+        if paginate_by and self._page_count < self._pagination_max_limit:
+            time.sleep(self._default_crawl_delay)
+            self.get(paginate_by)
+
+        self.package_pages()
         return self._data
 
     @property

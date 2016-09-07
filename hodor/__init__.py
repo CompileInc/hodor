@@ -2,6 +2,7 @@ from lxml import html
 from lxml.cssselect import CSSSelector
 from reppy.cache import RobotsCache
 from reppy.exceptions import ConnectionException
+from urlparse import urlparse, urljoin
 
 import requesocks
 import time
@@ -22,6 +23,7 @@ class Hodor(object):
 
         self.content = None
         self.url = url
+        self.domain = self._get_domain()
         self.proxies = proxies
         self.auth = auth
         self.ua = ua
@@ -42,6 +44,10 @@ class Hodor(object):
                 self.extra_config[k.lstrip("_")] = v
             else:
                 self.config[k] = v
+
+    def _get_domain(self):
+        parsed_uri = urlparse(self.url)
+        return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
     @property
     def _crawl_delay(self):
@@ -150,7 +156,12 @@ class Hodor(object):
 
     def _get(self, url):
         self._fetch(url)
-        return self._parse(self.content, self.config, self.extra_config, self.trim_values)
+        data, paginate_by = self._parse(self.content, self.config, self.extra_config, self.trim_values)
+
+        if paginate_by not in EMPTY_VALUES:
+            paginate_by = urljoin(self.domain, paginate_by)
+
+        return data, paginate_by
 
     def get(self, url=None):
         url = url if url else self.url

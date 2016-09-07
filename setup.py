@@ -5,11 +5,12 @@ from setuptools import setup, find_packages
 
 install_reqs = parse_requirements('requirements.txt', session=PipSession())
 reqs = [str(ir.req) for ir in install_reqs]
+version = '1.0.1'
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='hodorlive',
-    version='1.0',
+    version=version,
     packages=find_packages(),
     install_requires=reqs,
     include_package_data=True,
@@ -17,7 +18,7 @@ setup(
     description='xpath/css based scraper with pagination',
     keywords = ['hodor', 'cssselect', 'lxml', 'scraping'],
     url='https://github.com/CompileInc/hodor',
-    download_url = 'https://github.com/CompileInc/hodor/archive/v1.0.tar.gz',
+    download_url = 'https://github.com/CompileInc/hodor/archive/v{version}.tar.gz'.format(version=version),
     author='Compile Inc',
     author_email='dev@compile.com',
     classifiers=[

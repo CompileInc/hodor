@@ -2,6 +2,10 @@
 
 A simple html scraper with xpath or css.
 
+## Install
+
+```pip install hodorlive```
+
 ## Usage
 
 ### As python package

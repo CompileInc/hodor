@@ -1,16 +1,23 @@
+import time
+from functools import partial
+from operator import is_not
+
+import requests
 from lxml import html
 from lxml.cssselect import CSSSelector
 from reppy.cache import RobotsCache
 from reppy.exceptions import ConnectionException
-from urlparse import urlparse, urljoin
+try:
+    from urlparse import urlparse, urljoin
+except ImportError:
+    from urllib.parse import urlparse, urljoin
 
-import requesocks
-import time
 
 DEFAULT_HODOR_UA = 'Hodor'
 DEFAULT_HODOR_MAX_PAGES = 100
 DEFAULT_CRAWL_DELAY = 3
 EMPTY_VALUES = (None, '', [], (), {})
+
 
 class Hodor(object):
     def __init__(self, url, config={}, proxies={},
@@ -54,7 +61,8 @@ class Hodor(object):
         crawl_delay = self._default_crawl_delay
         if self.robots not in EMPTY_VALUES:
             try:
-                crawl_delay = max([self.robots.delay(self.url, self.ua), crawl_delay])
+                crawl_delay = max(filter(partial(is_not, None),
+                                         [self.robots.delay(self.url, self.ua), crawl_delay]))
             except ConnectionException:
                 pass
         return crawl_delay
@@ -63,7 +71,7 @@ class Hodor(object):
         '''Does the requests fetching and stores result in self.content'''
 
         if self.robots in EMPTY_VALUES or self.robots.allowed(url, self.ua):
-            session = requesocks.session()
+            session = requests.session()
             headers = {'User-Agent': self.ua}
             if len(self.proxies) > 0:
                 session.proxies = self.proxies
@@ -120,7 +128,7 @@ class Hodor(object):
         if len(self._pages) == 1:
             self._data = self._pages[0]
         else:
-            self._data = {key:[] for key in self._pages[0].keys()}
+            self._data = {key: [] for key in self._pages[0].keys()}
             for page in self._pages:
                 for k, v in page.items():
                     if hasattr(v, '__iter__'):
@@ -136,13 +144,19 @@ class Hodor(object):
             _data = {'content': content}
         else:
             _data = {}
+
+            try:
+                str_class = basestring
+            except NameError:
+                str_class = str
+
             for key, rule in config.items():
                 value = cls._get_value(content, rule)
                 if trim_values and value not in EMPTY_VALUES:
                     if 'many' in rule and rule['many']:
-                        value = [v.strip() if isinstance(v, basestring) else v for v in value]
+                        value = [v.strip() if isinstance(v, str_class) else v for v in value]
                     else:
-                        value = value.strip() if isinstance(value, basestring) else value
+                        value = value.strip() if isinstance(value, str_class) else value
                 _data[key] = value
 
         paginate_by = extra_config.get('paginate_by')

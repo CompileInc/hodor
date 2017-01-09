@@ -69,7 +69,7 @@ h.data
 #### Config parameters:
 - By default any key in the config is a rule to parse.
     - Each rule can be either a ```xpath``` or a ```css```
-    - Each rule can can extract ```many``` values by default unless explicity set to ```False```
+    - Each rule can extract ```many``` values by default unless explicity set to ```False```
     - Each rule can allow to ```transform``` the result with a function if provided
 - Extra parameters include grouping (```_groups```) and pagination (```_paginate_by```) which is also of the rule format.
 

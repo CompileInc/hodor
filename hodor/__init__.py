@@ -26,7 +26,8 @@ class Hodor(object):
                  crawl_delay=DEFAULT_CRAWL_DELAY,
                  ssl_verify=False,
                  trim_values=True,
-                 robots=True):
+                 robots=True,
+                 reppy_capacity=100):
 
         self.content = None
         self.url = url
@@ -39,7 +40,7 @@ class Hodor(object):
         self.config = {}
         self.extra_config = {}
 
-        self.robots = RobotsCache() if robots else None
+        self.robots = RobotsCache(capacity=reppy_capacity) if robots else None
 
         self._pages = []
         self._page_count = 0
@@ -91,6 +92,8 @@ class Hodor(object):
         except TypeError:
             tree = None
 
+        post_processing = rule.get('transform', lambda data: data)
+
         data = ""
         if tree not in EMPTY_VALUES:
             if 'xpath' in rule:
@@ -103,7 +106,9 @@ class Hodor(object):
                 if len(data) == 0:
                     data = None
                 else:
-                    data = data[0]
+                    data = post_processing(data[0])
+            else:
+                data = [post_processing(d) for d in data]
 
         return data
 

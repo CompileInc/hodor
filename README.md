@@ -17,6 +17,11 @@ A simple html scraper with xpath or css.
 
 ```python
 from hodor import Hodor
+from dateutil.parser import parse
+
+
+def date_convert(data):
+    return parse(data)
 
 url = 'http://www.nasdaq.com/markets/stocks/symbol-change-history.aspx'
 
@@ -31,7 +36,8 @@ CONFIG = {
     },
     'effective_date': {
         'css': '#SymbolChangeList_table tr td:nth-child(3)',
-        'many': True
+        'many': True,
+        'transform': date_convert
     },
     '_groups': {
         'data': ['old_symbol', 'new_symbol', 'effective_date']
@@ -56,11 +62,15 @@ h.data
 - ```pagination_max_limit``` (max number of pages to crawl - default: 100)
 - ```ssl_verify``` (default: False)
 - ```robots``` (if set respects robots.txt - default: True)
+- ```reppy_capacity``` (robots cache LRU capacity - default: 100)
 - ```trim_values``` (if set trims output for leading and trailing whitespace - default: True)
 
 
 #### Config parameters:
 - By default any key in the config is a rule to parse.
+    - Each rule can be either a ```xpath``` or a ```css```
+    - Each rule can extract ```many``` values by default unless explicity set to ```False```
+    - Each rule can allow to ```transform``` the result with a function if provided
 - Extra parameters include grouping (```_groups```) and pagination (```_paginate_by```) which is also of the rule format.
 
 

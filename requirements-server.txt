@@ -1,2 +1,0 @@
--r requirements.txt
-tornado==4.2.1

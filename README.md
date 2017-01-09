@@ -74,21 +74,3 @@ h.data
 - Extra parameters include grouping (```_groups```) and pagination (```_paginate_by```) which is also of the rule format.
 
 
-
-### As tornado service
-
-#### Server
-```shell
-docker-compose up
-```
-
-### Client
-```shell
-curl -X POST -F "url=https://www.compile.com/" -F "config={\"src\": {\"css\": \"strong\", \"many\":false}, \"width\": {\"xpath\": \"/html/body/div[1]/nav/div/div[1]/a/img/@width\", \"many\":false}}" "http://localhost:8888"
-```
-
-
-## Result
-```javascript
-{'src': '/img/compile-logo-white.1002b288.svg', 'width': ['100px']}
-```

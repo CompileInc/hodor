@@ -14,7 +14,7 @@ A simple html scraper with xpath or css.
 
 ***WARNING: This package by default doesn't verify ssl connections. Please check the [arguments](#arguments) to enable them.***
 
-
+#### Sample code
 ```python
 from hodor import Hodor
 from dateutil.parser import parse
@@ -51,6 +51,30 @@ CONFIG = {
 h = Hodor(url=url, config=CONFIG, pagination_max_limit=5)
 
 h.data
+```
+#### Sample output
+```python
+{'data': [{'effective_date': datetime.datetime(2016, 11, 1, 0, 0),
+           'new_symbol': 'ARNC',
+           'old_symbol': 'AA'},
+          {'effective_date': datetime.datetime(2016, 11, 1, 0, 0),
+           'new_symbol': 'ARNC$',
+           'old_symbol': 'AA$'},
+          {'effective_date': datetime.datetime(2016, 8, 16, 0, 0),
+           'new_symbol': 'MALN8',
+           'old_symbol': 'AHUSDN2018'},
+          {'effective_date': datetime.datetime(2016, 8, 16, 0, 0),
+           'new_symbol': 'MALN9',
+           'old_symbol': 'AHUSDN2019'},
+          {'effective_date': datetime.datetime(2016, 8, 16, 0, 0),
+           'new_symbol': 'MALQ6',
+           'old_symbol': 'AHUSDQ2016'},
+          {'effective_date': datetime.datetime(2016, 8, 16, 0, 0),
+           'new_symbol': 'MALQ7',
+           'old_symbol': 'AHUSDQ2017'},
+          {'effective_date': datetime.datetime(2016, 8, 16, 0, 0),
+           'new_symbol': 'MALQ8',
+           'old_symbol': 'AHUSDQ2018'}]}
 ```
 
 #### Arguments

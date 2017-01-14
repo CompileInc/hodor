@@ -45,7 +45,7 @@ class Hodor(object):
         self._pages = []
         self._page_count = 0
         self._pagination_max_limit = pagination_max_limit
-        self._default_crawl_delay = crawl_delay
+        self.crawl_delay = self._crawl_delay(crawl_delay)
 
         for k, v in config.items():
             if k.startswith("_"):
@@ -57,13 +57,13 @@ class Hodor(object):
         parsed_uri = urlparse(self.url)
         return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
-    @property
-    def _crawl_delay(self):
-        crawl_delay = self._default_crawl_delay
+    def _crawl_delay(self, crawl_delay):
+        expiry, robots = self.robots.fetch('{}robots.txt'.format(self.domain))
+        delay = robots.agent(self.ua).delay
         if self.robots not in EMPTY_VALUES:
             try:
                 crawl_delay = max(filter(partial(is_not, None),
-                                         [self.robots.delay(self.url, self.ua), crawl_delay]))
+                                         [delay, crawl_delay]))
             except ConnectionException:
                 pass
         return crawl_delay
@@ -190,7 +190,7 @@ class Hodor(object):
         self._page_count += 1
 
         if paginate_by and self._page_count < self._pagination_max_limit:
-            time.sleep(self._crawl_delay)
+            time.sleep(self.crawl_delay)
             self.get(paginate_by)
 
         self._package_pages()

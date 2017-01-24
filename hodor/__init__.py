@@ -113,20 +113,30 @@ class Hodor(object):
         return data
 
     @staticmethod
-    def _group_data(data, groups):
+    def _group_data(data, groups, config):
+        del_fields = []
         for dest, group_fields in groups.items():
+            if '__all__' in group_fields or group_fields == '__all__':
+                group_fields = [rule for rule in config.keys() if not rule.startswith('_')]
+                del_fields.extend(group_fields)
+
             gdata = []
             for field in group_fields:
                 gdata.append(data[field])
+
             data[dest] = []
             for gd in zip(*gdata):
                 d = {}
                 for i, field in enumerate(group_fields):
                     d[field] = gd[i]
                 data[dest].append(d)
-        group_fields = [field for field_set in groups.values() for field in field_set]
-        for field in group_fields:
-            del data[field]
+
+        if len(del_fields) == 0:
+            del_fields = [field for field_set in groups.values() for field in field_set]
+
+        for field in del_fields:
+            if field in data:
+                del data[field]
 
     def _package_pages(self):
         self._data = {}
@@ -170,7 +180,7 @@ class Hodor(object):
 
         groups = extra_config.get('groups', {})
         if groups:
-            cls._group_data(_data, groups)
+            cls._group_data(_data, groups, config)
         return _data, paginate_by
 
     def _get(self, url):

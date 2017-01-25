@@ -40,7 +40,8 @@ CONFIG = {
         'transform': date_convert
     },
     '_groups': {
-        'data': ['old_symbol', 'new_symbol', 'effective_date']
+        'data': '__all__',
+        'ticker_changes': ['old_symbol', 'new_symbol']
     },
     '_paginate_by': {
         'xpath': '//*[@id="two_column_main_content_lb_NextPage"]/@href',

@@ -58,9 +58,9 @@ class Hodor(object):
         return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
     def _crawl_delay(self, crawl_delay):
-        expiry, robots = self.robots.fetch('{}robots.txt'.format(self.domain))
-        delay = robots.agent(self.ua).delay
         if self.robots not in EMPTY_VALUES:
+            expiry, robots = self.robots.fetch('{}robots.txt'.format(self.domain))
+            delay = robots.agent(self.ua).delay
             try:
                 crawl_delay = max(filter(partial(is_not, None),
                                          [delay, crawl_delay]))

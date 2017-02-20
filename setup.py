@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 install_reqs = parse_requirements('requirements.txt', session=PipSession())
 reqs = [str(ir.req) for ir in install_reqs]
-version = '1.2.3'
+version = '1.2.4'
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(

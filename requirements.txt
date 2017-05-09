@@ -1,5 +1,5 @@
 cssselect==1.0.1
 lxml==3.7.3
 reppy==0.4.6
-requests==2.13.0
+requests==2.14.1
 

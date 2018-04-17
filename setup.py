@@ -1,18 +1,23 @@
 import os
-from pip.download import PipSession
-from pip.req import parse_requirements
+
 from setuptools import setup, find_packages
 
-install_reqs = parse_requirements('requirements.txt', session=PipSession())
-reqs = [str(ir.req) for ir in install_reqs]
-version = '1.2.5'
+
+def parse_requirements(filename):
+    """ load requirements from a pip requirements file """
+    lineiter = (line.strip() for line in open(filename))
+    return [line for line in lineiter if line and not line.startswith("#")]
+
+
+install_reqs = parse_requirements('requirements.txt')
+version = '1.2.6'
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name='hodorlive',
     version=version,
     packages=find_packages(),
-    install_requires=reqs,
+    install_requires=install_reqs,
     include_package_data=True,
     license='MIT',
     description='xpath/css based scraper with pagination',

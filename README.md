@@ -90,6 +90,25 @@ h.data
 - ```reppy_capacity``` (robots cache LRU capacity - default: 100)
 - ```trim_values``` (if set trims output for leading and trailing whitespace - default: True)
 
+You can also pass in all the above arguments prefixed with ```_``` as part of the config.
+
+```python
+CONFIG = {
+    'old_symbol': {
+        'css': '#SymbolChangeList_table tr td:nth-child(1)',
+        'many': True
+    },
+    'new_symbol': {
+        'css': '#SymbolChangeList_table tr td:nth-child(2)',
+        'many': True
+    },
+    '_groups': {
+        'data': '__all__',
+    },
+    '_url': 'http://www.nasdaq.com/markets/stocks/symbol-change-history.aspx'
+}
+```
+
 
 #### Config parameters:
 - By default any key in the config is a rule to parse.

@@ -1,2 +1,5 @@
 pandoc --from=markdown --to=rst --output=README.txt README.md
-python setup.py sdist upload -r pypi
+rm -rf dist
+python setup.py sdist bdist_wheel
+twine upload -r testpypi dist/*
+twine upload -r pypi dist/*

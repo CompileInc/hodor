@@ -10,7 +10,7 @@ def parse_requirements(filename):
 
 
 install_reqs = parse_requirements('requirements.txt')
-version = '1.2.9'
+version = '1.2.10'
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(

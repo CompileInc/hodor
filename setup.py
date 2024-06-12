@@ -10,7 +10,7 @@ def parse_requirements(filename):
 
 
 install_reqs = parse_requirements("requirements.txt")
-version = "1.2.11"
+version = "1.2.12"
 
 
 description = "xpath/css based scraper with pagination"

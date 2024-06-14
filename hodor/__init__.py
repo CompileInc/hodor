@@ -19,8 +19,13 @@ DEFAULT_CRAWL_DELAY = 3
 EMPTY_VALUES = (None, '', [], (), {})
 
 
+def _get_value_for_config(key, values):
+    _key = "_{}".format(key)
+    return values['config'][_key] if _key in values['config'] else values[key]
+
+
 class Hodor(object):
-    def __init__(self, url, config={}, proxies={},
+    def __init__(self, config={}, url=None, proxies={},
                  auth=None, ua=DEFAULT_HODOR_UA,
                  pagination_max_limit=DEFAULT_HODOR_MAX_PAGES,
                  crawl_delay=DEFAULT_CRAWL_DELAY,
@@ -30,22 +35,25 @@ class Hodor(object):
                  reppy_capacity=100):
 
         self.content = None
-        self.url = url
+        self.url = _get_value_for_config('url', locals())
+        if self.url in EMPTY_VALUES:
+            raise Exception("No URL present. Please specify url via parameters or config.")
+
         self.domain = self._get_domain()
-        self.proxies = proxies
-        self.auth = auth
-        self.ua = ua
-        self.trim_values = trim_values
-        self.ssl_verify = ssl_verify
+        self.proxies = _get_value_for_config('proxies', locals())
+        self.auth = _get_value_for_config('auth', locals())
+        self.ua = _get_value_for_config('ua', locals())
+        self.trim_values = _get_value_for_config('trim_values', locals())
+        self.ssl_verify = _get_value_for_config('ssl_verify', locals())
         self.config = {}
         self.extra_config = {}
 
-        self.robots = RobotsCache(capacity=reppy_capacity) if robots else None
+        self.robots = RobotsCache(capacity=reppy_capacity) if _get_value_for_config('robots', locals()) else None
 
         self._pages = []
         self._page_count = 0
-        self._pagination_max_limit = pagination_max_limit
-        self.crawl_delay = self._crawl_delay(crawl_delay)
+        self._pagination_max_limit = _get_value_for_config('pagination_max_limit', locals())
+        self.crawl_delay = self._crawl_delay(_get_value_for_config('crawl_delay', locals()))
 
         for k, v in config.items():
             if k.startswith("_"):

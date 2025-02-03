@@ -1,4 +1,4 @@
-cssselect==1.0.1
+cssselect==1.2.0
 lxml>=4.9.1
-reppy==0.4.12
+reppy2==0.3.6
 requests>=2.32.3,<2.40

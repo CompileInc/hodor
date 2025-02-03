@@ -5,8 +5,8 @@ from operator import is_not
 import requests
 from lxml import html
 from lxml.cssselect import CSSSelector
-from reppy.cache import RobotsCache
-from reppy.exceptions import ConnectionException
+from reppy2.cache import RobotsCache
+from reppy2.exceptions import ConnectionException
 try:
     from urlparse import urlparse, urljoin
 except ImportError:

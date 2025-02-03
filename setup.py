@@ -10,7 +10,7 @@ def parse_requirements(filename):
 
 
 install_reqs = parse_requirements("requirements.txt")
-version = "1.2.12"
+version = "1.2.13"
 
 
 description = "xpath/css based scraper with pagination"
@@ -36,6 +36,6 @@ setup(
     classifiers=[
         "Intended Audience :: Developers",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.11",
     ],
 )

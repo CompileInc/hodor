@@ -155,7 +155,7 @@ class Hodor(object):
     @classmethod
     def _parse(cls, content, config={}, extra_config={}, trim_values=True):
         '''Parses the content based on the config set'''
-        if not len(config):
+        if config:
             _data = {'content': content}
         else:
             _data = {}

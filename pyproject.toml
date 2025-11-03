@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hodorlive"
+version = "1.2.16"
+description = "xpath/css based scraper with pagination"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "MIT" }
+authors = [{ name = "Compile Inc", email = "dev@compile.com" }]
+keywords = ["hodor", "cssselect", "lxml", "scraping"]
+requires-python = ">=3.11"
+dependencies = [
+  "cssselect==1.2.0",
+  "lxml>=4.9.1",
+  "reppy2==0.3.6",
+  "requests>=2.32.3,<2.40",
+]
+classifiers = [
+  "Intended Audience :: Developers",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Homepage = "https://github.com/CompileInc/hodor"
+Download = "https://github.com/CompileInc/hodor/archive/v1.2.16.tar.gz"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hodor"]
+
+[tool.hatch.publish.targets.testpypi]
+url = "https://test.pypi.org/project/hodorlive/"
+
+[tool.hatch.publish.targets.pypi]
+url = "https://pypi.org/project/hodorlive/"

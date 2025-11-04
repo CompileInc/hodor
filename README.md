@@ -120,5 +120,25 @@ The script shells out to `uvx hatch build` followed by `uvx hatch publish` so th
 
 ### Publishing requirements
 
-1. Configure credentials in `~/.pypirc` as described in the [PyPI configuration specification](https://packaging.python.org/en/latest/specifications/pypirc/).
-2. Use the shared PyPI/TestPyPI credentials stored in [1Password](https://compileinc.1password.com/).
+Configure credentials in `~/.pypirc` as described in the [PyPI configuration specification](https://packaging.python.org/en/latest/specifications/pypirc/).
+
+Example configuration:
+
+```ini
+[distutils]
+index-servers =
+  pypi
+  testpypi
+
+[pypi]
+repository = https://upload.pypi.org/legacy/
+username = __token__
+password = <pypi-token>
+
+[testpypi]
+repository = https://test.pypi.org/legacy/
+username = __token__
+password = <testpypi-token>
+```
+
+Replace token placeholders with secrets from the team password manager and avoid committing the file to version control.

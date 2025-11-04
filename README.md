@@ -99,3 +99,26 @@ h.data
 - Extra parameters include grouping (```_groups```) and pagination (```_paginate_by```) which is also of the rule format.
 
 
+
+## Building & Publishing
+
+### Prerequisites
+
+- Install [uv](https://docs.astral.sh/uv/getting-started/installation/).
+- Review the [uvx execution model](https://docs.astral.sh/uv/concepts/tools/#execution-vs-installation) for running tools without global installs.
+- Hatch documentation: [https://hatch.pypa.io/latest/](https://hatch.pypa.io/latest/).
+
+### Build workflow
+
+Run the release helper to build and publish wheels and source archives via Hatch:
+
+```bash
+./upload.sh
+```
+
+The script shells out to `uvx hatch build` followed by `uvx hatch publish` so that Hatch is executed in an ephemeral environment.
+
+### Publishing requirements
+
+1. Configure credentials in `~/.pypirc` as described in the [PyPI configuration specification](https://packaging.python.org/en/latest/specifications/pypirc/).
+2. Use the shared PyPI/TestPyPI credentials stored in [1Password](https://compileinc.1password.com/).
